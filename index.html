@@ -32,6 +32,9 @@
       background-color: var(--bg-primary);
       color: var(--text-primary);
       line-height: 1.5;
+      position: fixed;
+      width: 100%;
+      overflow: hidden;
     }
 
     /* Main Layout */
@@ -39,7 +42,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      height: 100%;
       padding: 1rem;
     }
     
@@ -48,7 +51,7 @@
       flex-direction: column;
       width: 100%;
       max-width: 768px;
-      height: 80vh;
+      height: 100%;
       background-color: var(--bg-secondary);
       border-radius: 0.75rem;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
@@ -63,10 +66,11 @@
       padding: 1rem;
       background-color: var(--bg-tertiary);
       border-bottom: 1px solid var(--border-color);
+      height: 60px;
     }
 
     .logo-container {
-      height: 40px;
+      height: 30px;
       display: flex;
       align-items: center;
     }
@@ -74,6 +78,7 @@
     .logo-container img {
       height: 100%;
       width: auto;
+      object-fit: contain;
     }
 
     .chat-header select {
@@ -86,16 +91,13 @@
       cursor: pointer;
     }
 
-    .chat-header select:focus {
-      border-color: var(--accent-primary);
-    }
-
     /* Messages Area */
     .chat-messages {
       flex: 1;
       overflow-y: auto;
       padding: 1rem;
       background-color: var(--bg-secondary);
+      margin-bottom: 80px; /* Space for input area */
     }
 
     .message-row {
@@ -140,13 +142,27 @@
       margin-top: 0.25rem;
     }
 
-    /* Input Area */
+    /* Input Area - Fixed at bottom */
     .chat-input {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
       display: flex;
       gap: 0.75rem;
       padding: 1rem;
       background-color: var(--bg-tertiary);
       border-top: 1px solid var(--border-color);
+      max-width: 768px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 769px) {
+      .chat-input {
+        position: absolute;
+        border-bottom-left-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+      }
     }
 
     .chat-input textarea {
@@ -168,10 +184,6 @@
       color: var(--text-secondary);
     }
 
-    .chat-input textarea:focus {
-      border-color: var(--accent-primary);
-    }
-
     .chat-input button {
       padding: 0.75rem 1.5rem;
       background-color: var(--accent-primary);
@@ -181,62 +193,10 @@
       cursor: pointer;
       font-weight: 500;
       transition: background-color 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
     }
 
     .chat-input button:hover {
       background-color: var(--accent-hover);
-    }
-
-    .chat-input button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    /* Loading Indicator */
-    .typing-indicator {
-      display: flex;
-      gap: 0.25rem;
-      padding: 0.75rem;
-      background-color: var(--message-bot);
-      border-radius: 0.75rem;
-      border-bottom-left-radius: 0.25rem;
-      width: fit-content;
-      border: 1px solid var(--border-color);
-    }
-
-    .typing-dot {
-      width: 0.5rem;
-      height: 0.5rem;
-      background-color: var(--text-secondary);
-      border-radius: 50%;
-      animation: typing 1.4s infinite;
-    }
-
-    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes typing {
-      0%, 60%, 100% { transform: translateY(0); }
-      30% { transform: translateY(-0.25rem); }
-    }
-
-    /* Responsive Design */
-    @media (max-width: 640px) {
-      .app-container {
-        padding: 0;
-      }
-
-      .chat-container {
-        height: 100vh;
-        border-radius: 0;
-      }
-
-      .message-bubble {
-        max-width: 90%;
-      }
     }
 
     /* Scrollbar Styling */
@@ -252,6 +212,27 @@
       background: var(--border-color);
       border-radius: 0.25rem;
     }
+
+    /* Mobile Optimization */
+    @media (max-width: 768px) {
+      .app-container {
+        padding: 0;
+      }
+
+      .chat-container {
+        height: 100vh;
+        border-radius: 0;
+      }
+
+      .message-bubble {
+        max-width: 85%;
+      }
+
+      .chat-input {
+        padding: 0.75rem;
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+    }
   </style>
 </head>
 <body>
@@ -260,7 +241,7 @@
   <div class="chat-container">
     <div class="chat-header">
       <div class="logo-container">
-        <img src="/api/placeholder/120/40" alt="DeepSeek Logo" />
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwIiBoZWlnaHQ9IjQwIiB2aWV3Qm94PSIwIDAgMTYwIDQwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxwYXRoIGQ9Ik0yMCAxMEgxNDBWMzBIMjBWMTBaIiBmaWxsPSIjZjNmNGY2Ii8+CiAgPHRleHQgeD0iODAiIHk9IjI1IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiMwYTBhMGEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkRlZXBTZWVrPC90ZXh0Pgo8L3N2Zz4=" alt="DeepSeek Logo"/>
       </div>
       <select id="model-select">
         <option value="deepseek-chat">DeepSeek Chat (V3)</option>
@@ -311,6 +292,47 @@
     }
   });
 
+  function addMessageToUI(text, sender) {
+    const messageRow = document.createElement('div');
+    messageRow.className = `message-row ${sender}`;
+    
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+    
+    if (sender === 'bot') {
+      // For bot messages, start empty and animate the text
+      typeMessage(bubble, text);
+    } else {
+      bubble.textContent = text;
+    }
+    
+    const timestamp = document.createElement('div');
+    timestamp.className = 'message-timestamp';
+    timestamp.textContent = new Date().toLocaleTimeString();
+    
+    messageRow.appendChild(bubble);
+    messageRow.appendChild(timestamp);
+    chatMessages.appendChild(messageRow);
+    
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function typeMessage(element, text) {
+    let index = 0;
+    element.textContent = '';
+    
+    function typeNextChar() {
+      if (index < text.length) {
+        element.textContent += text[index];
+        index++;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        setTimeout(typeNextChar, 20); // Adjust speed here
+      }
+    }
+    
+    typeNextChar();
+  }
+
   async function sendMessage() {
     const text = userInput.value.trim();
     if (!text || isTyping) return;
@@ -323,9 +345,7 @@
     userInput.value = '';
     userInput.style.height = 'auto';
     
-    // Show typing indicator
     isTyping = true;
-    showTypingIndicator();
 
     // Prepare request to DeepSeek
     const selectedModel = modelSelect.value;
@@ -356,59 +376,13 @@
 
       // Add assistant response to the conversation
       conversation.push({ role: "assistant", content: assistantText });
-
-      // Hide typing indicator and show response
-      hideTypingIndicator();
       addMessageToUI(assistantText, 'bot');
     } catch (error) {
       console.error('Error calling DeepSeek API:', error);
-      hideTypingIndicator();
       addMessageToUI('Sorry, something went wrong. Please try again.', 'bot');
     }
 
     isTyping = false;
-  }
-
-  function addMessageToUI(text, sender) {
-    const messageRow = document.createElement('div');
-    messageRow.className = `message-row ${sender}`;
-    
-    const bubble = document.createElement('div');
-    bubble.className = 'message-bubble';
-    bubble.textContent = text;
-    
-    const timestamp = document.createElement('div');
-    timestamp.className = 'message-timestamp';
-    timestamp.textContent = new Date().toLocaleTimeString();
-    
-    messageRow.appendChild(bubble);
-    messageRow.appendChild(timestamp);
-    chatMessages.appendChild(messageRow);
-    
-    // Scroll to bottom
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
-
-  function showTypingIndicator() {
-    const indicator = document.createElement('div');
-    indicator.className = 'message-row bot';
-    indicator.innerHTML = `
-      <div class="typing-indicator">
-        <div class="typing-dot"></div>
-        <div class="typing-dot"></div>
-        <div class="typing-dot"></div>
-      </div>
-    `;
-    indicator.id = 'typing-indicator';
-    chatMessages.appendChild(indicator);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
-
-  function hideTypingIndicator() {
-    const indicator = document.getElementById('typing-indicator');
-    if (indicator) {
-      indicator.remove();
-    }
   }
 </script>
 
